@@ -8,6 +8,16 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 shopt -s dotglob
 for path in "$DIR"/home/*; do
   f=$(basename $path)
+
+  # .m2/settings.xml -> symlink only the .m2/settings.xml file and not entire .m2 folder
+  if [ "$f" == ".m2" ]; then
+    if [ ! -d "$HOME/$f" ]; then
+      mkdir "$HOME/$f"
+    fi
+    f=$f/settings.xml 
+    path=$path/settings.xml
+  fi
+
   if [ "$(readlink -- "$HOME/$f")" != "$path" ]; then
     if [ -f "$HOME/$f" ]; then
       read -p "File $HOME/$f already exists, override? [y/N]" choice
@@ -39,7 +49,7 @@ fi
 #
 # Install all the things
 #
-brew install nvm golang
+brew install nvm golang maven
 
 #
 # Java
