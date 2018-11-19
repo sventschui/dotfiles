@@ -1,19 +1,34 @@
 # CMD line
-markup_git_branch() {
-  if [[ -n $@ ]]; then
-    if [[ -z $(git status --porcelain 2> /dev/null) ]]; then
-      echo -e " \001\033[32m\002($@)\001\033[0m\002"
-    else
-      echo -e " \001\033[31m\002($@*)\001\033[0m\002"
+make_prompt() {
+  
+  local RESET="\033[00m"
+  local RED="\033[31m"
+  local GREEN="\033[32m"
+  local YELLOW="\033[33m"
+  local BLUE="\033[94m" # this is actually light blue
+
+  markup_git_branch() {
+    if [[ -n $@ ]]; then
+      COLOR=$GREEN
+      CHANGE_INDICATOR="*"
+      if [[ -n $(git status --porcelain 2> /dev/null) ]]; then
+        # Working dir is dirty
+        COLOR=$RED
+        CHANGE_INDICATOR="*"
+      fi
+      
+      echo -e "$COLOR($@$CHANGE_INDICATOR)\033[0m"
     fi
-  fi
+  }
+
+  parse_git_branch() {
+    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* (*\([^)]*\))*/\1/'
+  }
+
+  export PS1="$YELLOW\u $BLUE\W \$(markup_git_branch \$(parse_git_branch)) $RED$ $RESET"
 }
 
-parse_git_branch() {
-  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* (*\([^)]*\))*/\1/'
-}
-
-export PS1="\033[33m\u \033[31m\W\$(markup_git_branch \$(parse_git_branch)) \033[31m$ \033[00m"
+make_prompt
 
 # Docker
 export DOCKER_HOST=unix:///var/run/docker.sock
