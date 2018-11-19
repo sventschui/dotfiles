@@ -1,6 +1,6 @@
 [user]
 	name = Sven Tschui
-	email = github@sventschui.ch
+	email = sventschui@gmail.com
 	signingkey = BED735B0
 [push]
 	default = current
@@ -11,7 +11,7 @@
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
 [mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
 [filter "media"]
 	clean = git-media-clean %f
@@ -22,10 +22,12 @@
 	required = true
 [merge]
 	conflictstyle = diff3
+[commit]
+	template = /Users/sventschui/.stCommitMsg
 [filter "lfs"]
+	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
-	clean = git-lfs clean -- %f
-[commit]
-	template = /Users/sventschui/.stCommitMsg
+[diff "ansible-vault"]
+	textconv = ansible-vault view --vault-password-file=~/.ansiblevault
