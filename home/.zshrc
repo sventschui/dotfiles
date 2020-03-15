@@ -9,11 +9,26 @@ overridden() { [[ $TITLE_OVERRIDDEN == 1 ]]; }
 
 # Show cwd when shell prompts for input.
 precmd() {
-   vcs_info
-   if overridden; then return; fi
-   pwd=$(pwd) # Store full path as variable
-   cwd=${pwd##*/} # Extract current working dir only
-   print -Pn "\e]0;$cwd\a" # Replace with $pwd to show full path
+  vcs_info
+
+  if [[ -n ${vcs_info_msg_0_} ]]; then
+    # vcs_info found something (the documentation got that backwards
+    # STATUS line taken from https://github.com/robbyrussell/oh-my-zsh/blob/master/lib/git.zsh
+    STATUS=$(command git status --porcelain 2> /dev/null | tail -n1)
+    echo "$STATUS"
+    if [[ -n $STATUS ]]; then
+      PROMPT='%{$fg[yellow]%}%n %{$fg[blue]%}$(basename $PWD)%{$fg[red]%}${vcs_info_msg_0_} $ %{$reset_color%}'
+    else
+      PROMPT='%{$fg[yellow]%}%n %{$fg[blue]%}$(basename $PWD)%{$fg[green]%}${vcs_info_msg_0_} $ %{$reset_color%}'
+    fi
+  else
+    PROMPT='%{$fg[yellow]%}%n %{$fg[blue]%}$(basename $PWD)%{$fg[green]%}${vcs_info_msg_0_} $ %{$reset_color%}'
+  fi
+
+  if overridden; then return; fi
+  pwd=$(pwd) # Store full path as variable
+  cwd=${pwd##*/} # Extract current working dir only
+  print -Pn "\e]0;$cwd\a" # Replace with $pwd to show full path
 }
 
 # Prepend command (w/o arguments) to cwd while waiting for command to complete.
