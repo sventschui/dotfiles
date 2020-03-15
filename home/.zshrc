@@ -15,14 +15,33 @@ precmd() {
     # vcs_info found something (the documentation got that backwards
     # STATUS line taken from https://github.com/robbyrussell/oh-my-zsh/blob/master/lib/git.zsh
     STATUS=$(command git status --porcelain 2> /dev/null | tail -n1)
-    echo "$STATUS"
-    if [[ -n $STATUS ]]; then
-      PROMPT='%{$fg[yellow]%}%n %{$fg[blue]%}$(basename $PWD)%{$fg[red]%}${vcs_info_msg_0_} $ %{$reset_color%}'
+    # git diff origin/$(git name-rev --name-only HEAD)..HEAD --name-status
+    # TO_PUSH=$(git diff origin/$(git name-rev --name-only HEAD)..HEAD --name-status | wc -l  | awk '{print $1}')
+    BRANCH_STATUS=$(command git status -b --porcelain doesnotexistsblablabla 2> /dev/null)
+    local AHEAD
+    local BEHIND
+    [[ $BRANCH_STATUS =~ 'ahead ([0-9]+)' ]] && AHEAD=$match[1]
+    [[ $BRANCH_STATUS =~ 'behind ([0-9]+)' ]] && BEHIND=$match[1]
+    
+    # echo "$TO_PUSH"
+    if [[ -n "$AHEAD" ]]; then
+      AHEAD="↑$AHEAD"
+    fi
+    if [[ -n "$BEHIND" ]]; then
+      BEHIND="↓$BEHIND"
+    fi
+    BRANCH_DIFF="$AHEAD$BEHIND"
+    if [[ -n "$BRANCH_DIFF" ]]; then
+      BRANCH_DIFF=" $BRANCH_DIFF"
+    fi
+
+    if [[ -n $STATUS || -n $BRANCH_DIFF ]]; then
+      PROMPT='%{$fg[yellow]%}%n %{$fg[blue]%}$(basename $PWD) %{$fg[red]%}(${vcs_info_msg_0_}$BRANCH_DIFF) $ %{$reset_color%}'
     else
-      PROMPT='%{$fg[yellow]%}%n %{$fg[blue]%}$(basename $PWD)%{$fg[green]%}${vcs_info_msg_0_} $ %{$reset_color%}'
+      PROMPT='%{$fg[yellow]%}%n %{$fg[blue]%}$(basename $PWD) %{$fg[green]%}(${vcs_info_msg_0_}) $ %{$reset_color%}'
     fi
   else
-    PROMPT='%{$fg[yellow]%}%n %{$fg[blue]%}$(basename $PWD)%{$fg[green]%}${vcs_info_msg_0_} $ %{$reset_color%}'
+    PROMPT='%{$fg[yellow]%}%n %{$fg[blue]%}$(basename $PWD)% {$fg[green]%}$ %{$reset_color%}'
   fi
 
   if overridden; then return; fi
