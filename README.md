@@ -7,3 +7,5 @@ Includes
 - vim syntax highlighting
 - git config
 - ansible config
+
+![Screenshot of my terminal](screenshot.png)
