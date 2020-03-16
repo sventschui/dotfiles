@@ -41,7 +41,7 @@ precmd() {
       PROMPT='%{$fg[yellow]%}%n %{$fg[blue]%}$(basename $PWD) %{$fg[green]%}(${vcs_info_msg_0_}) $ %{$reset_color%}'
     fi
   else
-    PROMPT='%{$fg[yellow]%}%n %{$fg[blue]%}$(basename $PWD)% {$fg[green]%}$ %{$reset_color%}'
+    PROMPT='%{$fg[yellow]%}%n %{$fg[blue]%}$(basename $PWD) %{$fg[green]%}$ %{$reset_color%}'
   fi
 
   if overridden; then return; fi
