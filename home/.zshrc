@@ -59,6 +59,7 @@ preexec() {
 # added by travis gem
 [ -f /Users/sventschui/.travis/travis.sh ] && source /Users/sventschui/.travis/travis.sh
 
+source ~/.zshrc.d/ansible.sh
 source ~/.zshrc.d/completion.sh
 source ~/.zshrc.d/docker.sh
 source ~/.zshrc.d/go.sh
