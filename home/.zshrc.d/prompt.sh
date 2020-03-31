@@ -3,7 +3,7 @@ autoload -Uz vcs_info
 # zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:git:*' formats '%b' # %a %m %u %c)'
-# zstyle ':vcs_info:git*' actionformats "(%b [%a])"
+zstyle ':vcs_info:git:*' actionformats "%b [%a]"
 
 # CMD line
 setopt PROMPT_SUBST
